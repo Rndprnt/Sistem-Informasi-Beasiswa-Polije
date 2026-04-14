@@ -1,0 +1,158 @@
+-- =====================================
+-- BUAT DATABASE
+-- =====================================
+CREATE DATABASE beasiswa_db;
+USE beasiswa_db;
+
+-- =====================================
+-- TABEL PENGGUNA
+-- =====================================
+CREATE TABLE pengguna (
+    id_pengguna INT AUTO_INCREMENT PRIMARY KEY,
+    nama VARCHAR(100),
+    email VARCHAR(100),
+    password VARCHAR(255),
+    role VARCHAR(50),
+    dibuat_pada DATETIME
+);
+
+-- =====================================
+-- TABEL MAHASISWA
+-- =====================================
+CREATE TABLE mahasiswa (
+    id_mahasiswa INT AUTO_INCREMENT PRIMARY KEY,
+    id_pengguna INT,
+    nim VARCHAR(20),
+    jurusan VARCHAR(100),
+    prodi VARCHAR(100),
+    ipk DECIMAL(3,2),
+    semester INT,
+    FOREIGN KEY (id_pengguna) REFERENCES pengguna(id_pengguna)
+);
+
+-- =====================================
+-- TABEL PARTNER
+-- =====================================
+CREATE TABLE partner (
+    id_partner INT AUTO_INCREMENT PRIMARY KEY,
+    id_pengguna INT,
+    nama_partner VARCHAR(100),
+    kontak VARCHAR(100),
+    FOREIGN KEY (id_pengguna) REFERENCES pengguna(id_pengguna)
+);
+
+-- =====================================
+-- TABEL ADMIN
+-- =====================================
+CREATE TABLE admin (
+    id_admin INT AUTO_INCREMENT PRIMARY KEY,
+    id_pengguna INT,
+    jabatan VARCHAR(100),
+    FOREIGN KEY (id_pengguna) REFERENCES pengguna(id_pengguna)
+);
+
+-- =====================================
+-- TABEL KATEGORI
+-- =====================================
+CREATE TABLE kategori (
+    id_kategori INT AUTO_INCREMENT PRIMARY KEY,
+    nama VARCHAR(100)
+);
+
+-- =====================================
+-- TABEL ALUR BEASISWA
+-- =====================================
+CREATE TABLE alur_beasiswa (
+    id_alur INT AUTO_INCREMENT PRIMARY KEY,
+    deskripsi TEXT
+);
+
+-- =====================================
+-- TABEL BEASISWA
+-- =====================================
+CREATE TABLE beasiswa (
+    id_beasiswa INT AUTO_INCREMENT PRIMARY KEY,
+    id_pengguna INT,
+    id_kategori INT,
+    judul VARCHAR(150),
+    deskripsi TEXT,
+    syarat TEXT,
+    poster VARCHAR(255),
+    tgl_buka DATE,
+    tgl_tutup DATE,
+    link_daftar VARCHAR(255),
+    dibuat_pada DATETIME,
+    status VARCHAR(50),
+    FOREIGN KEY (id_pengguna) REFERENCES pengguna(id_pengguna),
+    FOREIGN KEY (id_kategori) REFERENCES kategori(id_kategori)
+);
+
+-- =====================================
+-- TABEL SIMULASI
+-- =====================================
+CREATE TABLE simulasi (
+    id_simulasi INT AUTO_INCREMENT PRIMARY KEY,
+    id_mahasiswa INT,
+    id_beasiswa INT,
+    status VARCHAR(50),
+    FOREIGN KEY (id_mahasiswa) REFERENCES mahasiswa(id_mahasiswa),
+    FOREIGN KEY (id_beasiswa) REFERENCES beasiswa(id_beasiswa)
+);
+
+-- =====================================
+-- TABEL BERKAS SIMULASI
+-- =====================================
+CREATE TABLE berkas_simulasi (
+    id_berkas INT AUTO_INCREMENT PRIMARY KEY,
+    id_simulasi INT,
+    nama_berkas VARCHAR(100),
+    file VARCHAR(255),
+    unggah_pada DATETIME,
+    FOREIGN KEY (id_simulasi) REFERENCES simulasi(id_simulasi)
+);
+
+-- =====================================
+-- TABEL HASIL SIMULASI
+-- =====================================
+CREATE TABLE hasil_simulasi (
+    id_hasil INT AUTO_INCREMENT PRIMARY KEY,
+    id_simulasi INT,
+    id_admin INT,
+    nilai DECIMAL(5,2),
+    catatan TEXT,
+    FOREIGN KEY (id_simulasi) REFERENCES simulasi(id_simulasi),
+    FOREIGN KEY (id_admin) REFERENCES admin(id_admin)
+);
+
+-- =====================================
+-- TABEL PUSTAKA
+-- =====================================
+CREATE TABLE pustaka (
+    id_pustaka INT AUTO_INCREMENT PRIMARY KEY,
+    id_admin INT,
+    judul VARCHAR(150),
+    deskripsi TEXT,
+    file_pustaka VARCHAR(255),
+    FOREIGN KEY (id_admin) REFERENCES admin(id_admin)
+);
+
+-- =====================================
+-- TABEL FAQ
+-- =====================================
+CREATE TABLE faq (
+    id_faq INT AUTO_INCREMENT PRIMARY KEY,
+    id_admin INT,
+    pertanyaan TEXT,
+    jawaban TEXT,
+    FOREIGN KEY (id_admin) REFERENCES admin(id_admin)
+);
+
+-- =====================================
+-- TABEL TENTANG KAMI
+-- =====================================
+CREATE TABLE tentang_kami (
+    id_tentang_kami INT AUTO_INCREMENT PRIMARY KEY,
+    id_admin INT,
+    deskripsi TEXT,
+    FOREIGN KEY (id_admin) REFERENCES admin(id_admin)
+);
